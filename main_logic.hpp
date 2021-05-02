@@ -17,14 +17,17 @@ class MainLogic {
 public:
     MainLogic(std::string input_file, int resources_number) : queries(std::move(input_file)), server(resources_number) {}
 
-    void Run(std::string algorithm, std::string heuristic) {
-        if (algorithm == "dynamicplacement") {
-            RunDynamicPlacement(std::move(heuristic));
+    void Run(const std::string& problem_type, const std::string& algorithm, std::string heuristic) {
+        if (problem_type == "dynamicplacement") {
+            RunDynamicPlacement(algorithm, std::move(heuristic));
+        } else {
+            std::cout << "No such problem type: " << problem_type << std::endl;
+            exit(0);
         }
     }
 
 private:
-    void RunDynamicPlacement(std::string heuristic) {
+    void RunDynamicPlacement(const std::string& algorithm, std::string heuristic) {
         /// CSV must be organized as follows:
         /// id,isStart,resource_1,...,resource_i
         /// where i is number of resources
@@ -55,7 +58,14 @@ private:
                 continue;
             }
 
-            int server_id = Algorithms::DynamicPlacement(heuristic, server.GetServers(), resources);
+            int server_id;
+            if (algorithm == "firstfit") {
+                server_id = Algorithms::FirstFit(server.GetServers(), resources);
+            } else {
+                std::cout << "For problem type dynamic placement" << std::endl;
+                std::cout << "No such algorithm: " << algorithm << std::endl;
+                exit(0);
+            }
 
             if (server_id == -1) {
                 server.AddServerAndPlace(id, resources);

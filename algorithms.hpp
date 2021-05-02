@@ -5,18 +5,13 @@
 
 class Algorithms {
 public:
-    static int DynamicPlacement(const std::string& heuristic, const std::vector<std::vector<long double>>& servers, const std::vector<long double>& resources) {
-        if (heuristic == "firstfit") {
-            for (int i = 0; i < servers.size(); ++i) {
-                if (Fits(servers[i], resources)) {
-                    return i;
-                }
+    static int FirstFit(const std::vector<std::vector<long double>>& servers, const std::vector<long double>& resources) {
+        for (int i = 0; i < servers.size(); ++i) {
+            if (Fits(servers[i], resources)) {
+                return i;
             }
-            return -1;
-        } else {
-            std::cout << "No such heuristic found: " << heuristic << std::endl;
-            exit(0);
         }
+        return -1;
     }
 
 private:

@@ -3,8 +3,8 @@
 
 #include "main_logic.hpp"
 
-const int ARGUMENTS_COUNT = 4;
-const std::string ARGUMENTS[ARGUMENTS_COUNT] = {"input file", "algorithm", "heuristic", "number of resources"};
+const int ARGUMENTS_COUNT = 5;
+const std::string ARGUMENTS[ARGUMENTS_COUNT] = {"input file", "problem type", "algorithm", "heuristic", "number of resources"};
 
 int main(int argc, char *argv[]) {
     if (argc - 1 < ARGUMENTS_COUNT) {
@@ -17,14 +17,15 @@ int main(int argc, char *argv[]) {
     }
 
     std::string input_file = argv[1];
-    std::string algorithm = argv[2];
-    std::string heuristic = argv[3];
-    std::string resources_number_str = argv[4];
+    std::string problem_type = argv[2];
+    std::string algorithm = argv[3];
+    std::string heuristic = argv[4];
+    std::string resources_number_str = argv[5];
 
     int resources_number = string2int(resources_number_str);
 
     MainLogic mainLogic(input_file, resources_number);
-    mainLogic.Run(algorithm, heuristic);
+    mainLogic.Run(problem_type, algorithm, heuristic);
 
     return 0;
 }
