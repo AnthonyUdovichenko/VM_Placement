@@ -27,7 +27,7 @@ public:
     }
 
 private:
-    void RunDynamicPlacement(const std::string& algorithm, std::string heuristic) {
+    void RunDynamicPlacement(const std::string& algorithm, const std::string& heuristic) {
         /// CSV must be organized as follows:
         /// id,isStart,resource_1,...,resource_i
         /// where i is number of resources
@@ -61,6 +61,8 @@ private:
             int server_id;
             if (algorithm == "firstfit") {
                 server_id = Algorithms::FirstFit(server.GetServers(), resources);
+            } else if (algorithm == "bestfit") {
+                server_id = Algorithms::BestFit(heuristic, server.GetServers(), resources);
             } else {
                 std::cout << "For problem type dynamic placement" << std::endl;
                 std::cout << "No such algorithm: " << algorithm << std::endl;
