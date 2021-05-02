@@ -19,16 +19,19 @@ public:
         int best_ind = -1;
         for (int i = 0; i < servers.size(); ++i) {
             if (Fits(servers[i], resources)) {
+                long double value;
                 if (heuristic == "sum") {
-                    long double value = sum(servers[i]);
-                    if (value > best_value) {
-                        best_value = value;
-                        best_ind = i;
-                    }
+                    value = sum(servers[i]);
+                } else if (heuristic == "prod") {
+                    value = prod(servers[i]);
                 } else {
                     std::cout << "For BestFit" << std::endl;
                     std::cout << "No such heuristic: " << heuristic << std::endl;
                     exit(0);
+                }
+                if (value > best_value) {
+                    best_value = value;
+                    best_ind = i;
                 }
             }
         }
@@ -51,6 +54,14 @@ private:
         long double result = 0;
         for (auto resource : server_resources) {
             result += resource;
+        }
+        return result;
+    }
+
+    static long double prod(const std::vector<long double>& server_resources) {
+        long double result = 1;
+        for (auto resource : server_resources) {
+            result *= resource;
         }
         return result;
     }
