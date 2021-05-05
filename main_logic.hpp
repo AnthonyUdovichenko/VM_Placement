@@ -11,15 +11,15 @@
 #include "algorithms.hpp"
 #include "casts.hpp"
 #include "csvrow.hpp"
-#include "server.hpp"
+#include "server_pool.hpp"
 
 class MainLogic {
 public:
-    MainLogic(std::string input_file, int resources_number) : queries(std::move(input_file)), server(resources_number) {}
+    MainLogic(std::string input_file, int resources_number) : queries(std::move(input_file)), serverPool(resources_number) {}
 
-    void Run(const std::string& problem_type, const std::string& algorithm, std::string heuristic) {
+    void Run(const std::string& problem_type, const std::string& algorithm, const std::string& heuristic) {
         if (problem_type == "dynamicplacement") {
-            RunDynamicPlacement(algorithm, std::move(heuristic));
+            RunDynamicPlacement(algorithm, heuristic);
         } else {
             std::cout << "No such problem type: " << problem_type << std::endl;
             exit(0);
@@ -29,14 +29,14 @@ public:
 private:
     void RunDynamicPlacement(const std::string& algorithm, const std::string& heuristic) {
         /// CSV must be organized as follows:
-        /// id,isStart,resource_1,...,resource_i
+        /// id,start_or_end,resource_1,...,resource_i
         /// where i is number of resources
 
         std::ifstream file(queries);
         CSVRow row;
 
         while (file >> row) {
-            int resources_number = server.GetResourcesNumber();
+            int resources_number = serverPool.GetResourcesNumber();
 
             if (row.size() < resources_number + 2) {
                 std::cout << "CSV file is incorrect" << std::endl << std::endl;
@@ -47,22 +47,22 @@ private:
             }
 
             int id = string2int(row[0]);
-            int isStart = string2int(row[1]);
+            std::string_view start_or_end = row[1];
             std::vector<long double> resources(resources_number);
             for (int i = 1; i <= resources_number; ++i) {
                 resources[i - 1] = string2longdouble(row[i + 1]);
             }
 
-            if (isStart == 0) {
-                server.DeleteById(id);
+            if (start_or_end == "end") {
+                serverPool.DeleteById(id);
                 continue;
             }
 
             int server_id;
             if (algorithm == "firstfit") {
-                server_id = Algorithms::FirstFit(server.GetServers(), resources);
+                server_id = Algorithms::FirstFit(serverPool.GetServers(), resources);
             } else if (algorithm == "bestfit") {
-                server_id = Algorithms::BestFit(heuristic, server.GetServers(), resources);
+                server_id = Algorithms::BestFit(heuristic, serverPool.GetServers(), resources);
             } else {
                 std::cout << "For problem type dynamic placement" << std::endl;
                 std::cout << "No such algorithm: " << algorithm << std::endl;
@@ -70,14 +70,14 @@ private:
             }
 
             if (server_id == -1) {
-                server.AddServerAndPlace(id, resources);
+                serverPool.AddServerAndPlace(id, resources);
             } else {
-                server.Place(server_id, id, resources);
+                serverPool.Place(server_id, id, resources);
             }
         }
-        server.PrintServersSummaryToFile("servers_load.csv");
+        serverPool.PrintServersSummaryToFile("servers_load.csv");
     }
 
     std::string queries;
-    Server server;
+    ServerPool serverPool;
 };

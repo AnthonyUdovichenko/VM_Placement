@@ -6,9 +6,9 @@
 #include <unordered_map>
 #include <utility>
 
-class Server {
+class ServerPool {
 public:
-    explicit Server(int resources_number) : resources_number(resources_number) {}
+    explicit ServerPool(int resources_number) : resources_number(resources_number) {}
 
     [[nodiscard]]
     int GetResourcesNumber() const {
