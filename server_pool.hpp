@@ -21,6 +21,9 @@ public:
     }
 
     void DeleteById(int vm_id) {
+        if (id_to_server.count(vm_id) == 0) {
+            return;
+        }
         int server_id = id_to_server[vm_id];
         const std::vector<long double>& resources = id_to_resources[vm_id];
         for (int i = 0; i < resources_number; ++i) {

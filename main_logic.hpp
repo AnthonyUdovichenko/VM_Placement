@@ -29,7 +29,7 @@ public:
 private:
     void RunDynamicPlacement(const std::string& algorithm, const std::string& heuristic) {
         /// CSV must be organized as follows:
-        /// id,start_or_end,resource_1,...,resource_i
+        /// id,start_or_end,time,resource_1,...,resource_i
         /// where i is number of resources
 
         std::ifstream file(queries);
@@ -38,19 +38,20 @@ private:
         while (file >> row) {
             int resources_number = serverPool.GetResourcesNumber();
 
-            if (row.size() < resources_number + 2) {
+            if (row.size() < resources_number + 3) {
                 std::cout << "CSV file is incorrect" << std::endl << std::endl;
                 std::cout << "CSV must be organized as follows:" << std::endl;
-                std::cout << "id,isStart,resource_1,...,resource_i" << std::endl;
+                std::cout << "id,start_or_end,time,resource_1,...,resource_i" << std::endl;
                 std::cout << "where i is number of resources" << std::endl;
                 exit(0);
             }
 
             int id = string2int(row[0]);
             std::string_view start_or_end = row[1];
+            long double time = string2longdouble(row[2]);
             std::vector<long double> resources(resources_number);
             for (int i = 1; i <= resources_number; ++i) {
-                resources[i - 1] = string2longdouble(row[i + 1]);
+                resources[i - 1] = string2longdouble(row[i + 2]);
             }
 
             if (start_or_end == "end") {
