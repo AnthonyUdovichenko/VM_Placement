@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -15,7 +16,7 @@
 
 class MainLogic {
 public:
-    MainLogic(std::string input_file, int resources_number) : queries(std::move(input_file)), serverPool(resources_number) {}
+    MainLogic(std::string input_file, int resources_number, int run_number, std::string folder) : queries(std::move(input_file)), serverPool(resources_number), run_number(run_number), folder(std::move(folder)) {}
 
     void Run(const std::string& problem_type, const std::string& algorithm, const std::string& heuristic) {
         if (problem_type == "dynamicplacement") {
@@ -34,6 +35,8 @@ private:
 
         std::ifstream file(queries);
         CSVRow row;
+
+        std::ofstream log(folder + "/log/log" + int2string(run_number));
 
         while (file >> row) {
             int resources_number = serverPool.GetResourcesNumber();
@@ -56,6 +59,7 @@ private:
 
             if (start_or_end == "end") {
                 serverPool.DeleteById(id);
+                log << std::fixed << std::setprecision(14) << time << " " << serverPool.GetServersNumber() << " " << serverPool.GetVMNumber() << std::endl;
                 continue;
             }
 
@@ -75,10 +79,14 @@ private:
             } else {
                 serverPool.Place(server_id, id, resources);
             }
+            log << std::fixed << std::setprecision(14) << time << " " << serverPool.GetServersNumber() << " " << serverPool.GetVMNumber() << std::endl;
         }
-        serverPool.PrintServersSummaryToFile("servers_load.csv");
+        serverPool.PrintServersSummaryToFile(folder + "/servers_load/servers_load" + int2string(run_number) + ".csv");
+        serverPool.PrintServersNumberToFile(folder + "/servers_number/servers_number" + int2string(run_number));
     }
 
     std::string queries;
     ServerPool serverPool;
+    int run_number;
+    std::string folder;
 };

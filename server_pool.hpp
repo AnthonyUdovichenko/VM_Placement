@@ -8,7 +8,7 @@
 
 class ServerPool {
 public:
-    explicit ServerPool(int resources_number) : resources_number(resources_number) {}
+    explicit ServerPool(int resources_number) : resources_number(resources_number), vm_number(0) {}
 
     [[nodiscard]]
     int GetResourcesNumber() const {
@@ -18,6 +18,14 @@ public:
     [[nodiscard]]
     const std::vector<std::vector<long double>>& GetServers() const {
         return servers;
+    }
+
+    unsigned int GetServersNumber() const {
+        return servers.size();
+    }
+
+    int GetVMNumber() const {
+        return vm_number;
     }
 
     void DeleteById(int vm_id) {
@@ -31,6 +39,7 @@ public:
         }
         id_to_resources.erase(vm_id);
         id_to_server.erase(vm_id);
+        --vm_number;
     }
 
     void Place(int server_id, int vm_id, std::vector<long double> resources) {
@@ -39,6 +48,7 @@ public:
             servers[server_id][i] += resources[i];
         }
         id_to_resources[vm_id] = std::move(resources);
+        ++vm_number;
     }
 
     void AddServerAndPlace(int vm_id, std::vector<long double> resources) {
@@ -58,8 +68,15 @@ public:
         }
     }
 
+    void PrintServersNumberToFile(const std::string& output_file) const {
+        std::ofstream file(output_file);
+
+        file << servers.size() << std::endl;
+    }
+
 private:
     int resources_number;
+    int vm_number;
     std::vector<std::vector<long double>> servers;
     std::unordered_map<int, std::vector<long double>> id_to_resources;
     std::unordered_map<int, int> id_to_server;
