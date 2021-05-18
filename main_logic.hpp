@@ -68,6 +68,8 @@ private:
                 server_id = Algorithms::FirstFit(serverPool.GetServers(), resources);
             } else if (algorithm == "bestfit") {
                 server_id = Algorithms::BestFit(heuristic, serverPool.GetServers(), resources);
+            } else if (algorithm == "mishrasahoo") {
+                server_id = Algorithms::MishraSahoo(heuristic, serverPool.GetServers(), resources);
             } else {
                 std::cout << "For problem type dynamic placement" << std::endl;
                 std::cout << "No such algorithm: " << algorithm << std::endl;

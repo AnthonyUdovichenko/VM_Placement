@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 
+#include "mishra_sahoo_method.hpp"
+
 class Algorithms {
 public:
     static int FirstFit(const std::vector<std::vector<long double>>& servers, const std::vector<long double>& resources) {
@@ -36,6 +38,19 @@ public:
             }
         }
         return best_ind;
+    }
+
+    static int MishraSahoo(const std::string& goal, const std::vector<std::vector<long double>>& servers, const std::vector<long double>& vm) {
+        MishraSahooMethod msm(2 / 3.0, 1 / 3.0);
+        if (goal == "loadbalance") {
+            return msm.dynamicPlaceVM(servers, vm, LOAD_BALANCE);
+        } else if (goal == "consolidate") {
+            return msm.dynamicPlaceVM(servers, vm, CONSOLIDATE);
+        } else {
+            std::cout << "In MishraSahoo" << std::endl;
+            std::cout << "No such goal: " << goal << std::endl;
+            exit(0);
+        }
     }
 
 private:
