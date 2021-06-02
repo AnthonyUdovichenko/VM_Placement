@@ -8,7 +8,7 @@
 
 class ServerPool {
 public:
-    explicit ServerPool(int resources_number) : resources_number(resources_number), vm_number(0) {}
+    explicit ServerPool(int resources_number) : resources_number(resources_number), vm_number(0), cpu_usage(0) {}
 
     [[nodiscard]]
     int GetResourcesNumber() const {
@@ -28,6 +28,10 @@ public:
         return vm_number;
     }
 
+    long double GetCPUUsage() const {
+        return cpu_usage;
+    }
+
     void DeleteById(int vm_id) {
         if (id_to_server.count(vm_id) == 0) {
             return;
@@ -37,6 +41,7 @@ public:
         for (int i = 0; i < resources_number; ++i) {
             servers[server_id][i] -= resources[i];
         }
+        cpu_usage -= resources[0];
         id_to_resources.erase(vm_id);
         id_to_server.erase(vm_id);
         --vm_number;
@@ -47,6 +52,7 @@ public:
         for (int i = 0; i < resources_number; ++i) {
             servers[server_id][i] += resources[i];
         }
+        cpu_usage += resources[0];
         id_to_resources[vm_id] = std::move(resources);
         ++vm_number;
     }
@@ -80,4 +86,5 @@ private:
     std::vector<std::vector<long double>> servers;
     std::unordered_map<int, std::vector<long double>> id_to_resources;
     std::unordered_map<int, int> id_to_server;
+    long double cpu_usage;
 };
