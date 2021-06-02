@@ -59,7 +59,7 @@ private:
 
             if (start_or_end == "end") {
                 serverPool.DeleteById(id);
-                log << std::fixed << std::setprecision(14) << time << " " << serverPool.GetServersNumber() << " " << serverPool.GetVMNumber() << std::endl;
+                log << std::fixed << std::setprecision(14) << time << " " << serverPool.GetServersNumber() << " " << serverPool.GetCPUUsage() << std::endl;
                 continue;
             }
 
@@ -81,7 +81,7 @@ private:
             } else {
                 serverPool.Place(server_id, id, resources);
             }
-            log << std::fixed << std::setprecision(14) << time << " " << serverPool.GetServersNumber() << " " << serverPool.GetVMNumber() << std::endl;
+            log << std::fixed << std::setprecision(14) << time << " " << serverPool.GetServersNumber() << " " << serverPool.GetCPUUsage() << std::endl;
         }
         serverPool.PrintServersSummaryToFile(folder + "/servers_load/servers_load" + int2string(run_number) + ".csv");
         serverPool.PrintServersNumberToFile(folder + "/servers_number/servers_number" + int2string(run_number));
