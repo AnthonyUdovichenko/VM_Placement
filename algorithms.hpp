@@ -26,6 +26,8 @@ public:
                     value = sum(servers[i]);
                 } else if (heuristic == "prod") {
                     value = prod(servers[i]);
+                } else if (heuristic == "cpu") {
+                    value = servers[i][0];
                 } else {
                     std::cout << "In BestFit" << std::endl;
                     std::cout << "No such heuristic: " << heuristic << std::endl;
